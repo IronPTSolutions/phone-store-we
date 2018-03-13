@@ -9,7 +9,7 @@ export class PhonesService {
   private static readonly BASE_API = environment.baseApi;
   private static readonly PHONES_API = `${PhonesService.BASE_API}/phones`;
   private static defaultHeaders: Headers = new Headers({ 'Content-Type': 'application/json' });
-  private static defaultOptions: RequestOptions = new RequestOptions({ headers: PhonesService.defaultHeaders });
+  private static defaultOptions: RequestOptions = new RequestOptions({ headers: PhonesService.defaultHeaders, withCredentials: true });
 
   constructor(private http: Http) { }
 

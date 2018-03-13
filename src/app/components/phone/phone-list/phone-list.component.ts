@@ -1,6 +1,8 @@
+import { SessionService } from './../../../shared/services/session.service';
 import { PhonesService } from './../../../shared/services/phones.service';
 import { Phone } from './../../../shared/model/phone.model';
 import { Component, OnInit } from '@angular/core';
+import { User } from '../../../shared/model/user.model';
 
 @Component({
   selector: 'app-phone-list',
