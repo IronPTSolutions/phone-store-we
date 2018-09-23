@@ -1,7 +1,8 @@
+import { ApiError } from './../../../shared/models/api-error';
 import { SessionService } from './../../../shared/services/session.service';
-import { print } from 'util';
-import { User } from './../../../shared/model/user.model';
 import { Component, OnInit } from '@angular/core';
+import { User } from '../../../shared/models/user.model';
+import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 
 @Component({
@@ -9,26 +10,20 @@ import { Router } from '@angular/router';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
+  apiError: ApiError;
   user: User = new User();
-  apiError: string;
 
-  constructor(
-    private sessionService: SessionService,
-    private router: Router
-  ) {}
+  constructor(private sessionService: SessionService, private router: Router) { }
 
-  ngOnInit() { }
-
-  onSubmitLogin(loginForm) {
-    this.sessionService.authenticate(this.user).subscribe(
-      (user) => {
-        loginForm.reset();
-        this.router.navigate(['/phones']);
-      },
-      (error) => {
-        this.apiError = error.message;
-      }
-    );
+  onSubmitLogin(loginForm: FormGroup): void {
+    this.sessionService.authenticate(this.user)
+      .subscribe(
+        (user: User) => {
+          loginForm.reset();
+          this.router.navigate(['/phones']);
+        },
+        (error: ApiError) => this.apiError = error
+      );
   }
 }

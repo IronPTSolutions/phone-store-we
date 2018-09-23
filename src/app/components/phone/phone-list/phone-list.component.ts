@@ -1,22 +1,19 @@
-import { SessionService } from './../../../shared/services/session.service';
-import { PhonesService } from './../../../shared/services/phones.service';
-import { Phone } from './../../../shared/model/phone.model';
+import { PhoneService } from './../../../shared/services/phone.service';
+import { Phone } from './../../../shared/models/phone.model';
 import { Component, OnInit } from '@angular/core';
-import { User } from '../../../shared/model/user.model';
 
 @Component({
   selector: 'app-phone-list',
-  templateUrl: './phone-list.component.html',
-  styleUrls: ['./phone-list.component.css']
+  templateUrl: './phone-list.component.html'
 })
 export class PhoneListComponent implements OnInit {
   phones: Array<Phone> = [];
 
-  constructor(private phonesService: PhonesService) { }
+  constructor(private phoneService: PhoneService) {}
 
   ngOnInit() {
-    this.phonesService.list()
-      .subscribe((phones) => this.phones = phones);
+    this.phoneService.list()
+      .subscribe(phones => this.phones = phones);
   }
 
 }

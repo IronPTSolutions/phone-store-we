@@ -1,5 +1,8 @@
-.phone-info, .phone-thumbnail {
-    display: inline-block;
-    vertical-align: top;
-    margin-right: 20px;
+img {
+  max-width: 200px;
+  width: 100%;
+}
+
+.card {
+  border: none;
 }

@@ -1,18 +1,9 @@
-<div *ngIf="phone">
-  <div class="phone-thumbnail">
-    <img height="300" [src]="phone.image" />
-  </div>
-
-  <div class="phone-info">
-    <h2> {{ phone.name }}</h2>
-    <h3> {{ phone.brand }} </h3>
-
-    <div *ngIf="phone.specs.length">
-      <h4> Features </h4>
-      <ul>
-        <li *ngFor="let spec of phone.specs"> {{ spec }} </li>
-      </ul>
-    </div>
-    <button class="btn btn-danger" (click)="onClickDelete()">Delete</button>
+<div class="card">
+  <img class="card-img-top" [src]="phone.image" alt="Card image cap">
+  <div class="card-body">
+    <h5 class="card-title">{{ phone.name }}</h5>
+    <ul>
+      <li *ngFor="let spec of phone.specs"> {{ spec }}</li>
+    </ul>
   </div>
 </div>

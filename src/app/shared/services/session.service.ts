@@ -1,69 +1,92 @@
-import { BaseApiService } from './base-api.service';
-import { User } from './../model/user.model';
-import { Http, Headers, RequestOptions, Response } from '@angular/http';
+import { ApiError } from './../models/api-error';
 import { environment } from './../../../environments/environment';
+import { User } from './../models/user.model';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs/Rx';
+import { Observable, throwError, Subject } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
-const CURRENT_USER_KEY = 'currentUser';
+@Injectable({
+  providedIn: 'root'
+})
+export class SessionService {
+  private static readonly SESSIONS_API = `${environment.baseApi}/sessions`;
+  private static defaultHeaders: HttpHeaders = new HttpHeaders()
+    .set('Content-Type', 'application/json')
+    .set('Accept', 'application/json');
+  private static defaultOptions = {
+    headers: SessionService.defaultHeaders,
+    withCredentials: true
+  };
+  private static readonly CURRENT_USER_KEY = 'current-user';
 
-@Injectable()
-export class SessionService extends BaseApiService {
-  private static readonly SESSION_API = `${BaseApiService.BASE_API}/session`;
-
-  private user: User;
+  public user: User;
   private userSubject: Subject<User> = new Subject();
 
-  constructor(private http: Http) {
-    super();
-    this.user = JSON.parse(localStorage.getItem(CURRENT_USER_KEY));
+  constructor(private http: HttpClient) {
+    const userData = localStorage.getItem(SessionService.CURRENT_USER_KEY);
+    if (userData) {
+      this.user = Object.assign(new User(), JSON.parse(userData));
+    }
     this.notifyUserChanges();
   }
 
-  authenticate(user: User): Observable<User> {
-    return this.http.post(SessionService.SESSION_API, JSON.stringify(user), BaseApiService.defaultOptions)
-      .map(res => {
-        return this.doAuthentication(res.json());
-      })
-      .catch(error => this.handleError(error));
-  }
-
-  logout(): Observable<void> {
-    return this.http.delete(SessionService.SESSION_API, BaseApiService.defaultOptions)
-      .map(res => {
-        return this.doLogout();
-      })
-      .catch(error => this.handleError(error));
-  }
-
-  isAuthenticated(): boolean {
-    return this.user ? true : false;
-  }
-
-  getUser(): User {
-    return this.user;
+  authenticate(user: User): Observable<User | ApiError> {
+    return this.http.post<User>(SessionService.SESSIONS_API, user, SessionService.defaultOptions)
+      .pipe(
+        map((user: User) => {
+          this.doAuthentication(user);
+          return user;
+        }),
+        catchError(this.handleError)
+      );
   }
 
   onUserChanges(): Observable<User> {
     return this.userSubject.asObservable();
   }
 
-  private doAuthentication(user: User): User {
+  isAuthenticated(): boolean {
+    return this.user ? true : false;
+  }
+
+  logout(): Observable<void | ApiError> {
+    return this.http.delete<void>(SessionService.SESSIONS_API, SessionService.defaultOptions)
+      .pipe(
+        map(() => this.doLogout()),
+        catchError(this.handleError)
+      );
+  }
+
+  private doAuthentication(user: User): void {
     this.user = user;
-    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(this.user));
+    localStorage.setItem(SessionService.CURRENT_USER_KEY, JSON.stringify(user));
     this.notifyUserChanges();
-    return this.user;
   }
 
-  protected doLogout(): void {
+  private doLogout(): void {
     this.user = null;
-    localStorage.removeItem(CURRENT_USER_KEY);
+    localStorage.removeItem(SessionService.CURRENT_USER_KEY);
     this.notifyUserChanges();
   }
 
-  private notifyUserChanges() {
+  private notifyUserChanges(): void {
     this.userSubject.next(this.user);
   }
 
-}
+  private handleError(error: HttpErrorResponse): Observable<ApiError> {
+    if (error.error instanceof ErrorEvent) {
+      // A client-side or network error occurred. Handle it accordingly.
+      console.error('An error occurred:', error.error.message);
+      return throwError(Object.assign(new ApiError(), { message: 'Something bad happened; please try again later.'}));
+    } else {
+      // The backend returned an unsuccessful response code.
+      // The response body may contain clues as to what went wrong,
+      console.error(
+        `Backend returned code ${error.status}, ` +
+        `body was: ${error.error}`);
+      return throwError(Object.assign(new ApiError(), error.error));
+    }
+  }
 
+}
