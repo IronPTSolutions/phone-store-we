@@ -7,16 +7,17 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class IsAuthenticatedGuard implements CanActivate {
+
   constructor(private sessionService: SessionService, private router: Router) {}
 
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-      const isAuth = this.sessionService.isAuthenticated();
-      if (!isAuth) {
-        this.router.navigate(['/login']);
-      }
-      console.log('auth', isAuth);
-      return isAuth;
+    const isAuth = this.sessionService.isAuthenticated();
+    if (!isAuth) {
+      this.router.navigate(['/login']);
+    }
+    return isAuth;
   }
+
 }

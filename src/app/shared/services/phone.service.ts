@@ -1,5 +1,6 @@
+import { ApiError } from '../models/api-error.model';
+import { BaseApiService } from './base-api.service';
 import { Phone } from './../models/phone.model';
-import { environment } from './../../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
@@ -8,30 +9,16 @@ import { catchError } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
-export class PhoneService {
-  private static readonly PHONE_API = `${environment.baseApi}/phones`;
+export class PhoneService extends BaseApiService {
+  private static readonly PHONE_API = `${BaseApiService.BASE_API}/phones`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    super();
+  }
 
-  list(): Observable<Array<Phone>> {
-    return this.http.get<Array<Phone>>(PhoneService.PHONE_API)
+  list(): Observable<Array<Phone> | ApiError> {
+    return this.http.get<Array<Phone>>(PhoneService.PHONE_API, BaseApiService.defaultOptions)
       .pipe(catchError(this.handleError));
   }
-
-  private handleError(error: HttpErrorResponse): Observable<never> {
-    if (error.error instanceof ErrorEvent) {
-      // A client-side or network error occurred. Handle it accordingly.
-      console.error('An error occurred:', error.error.message);
-    } else {
-      // The backend returned an unsuccessful response code.
-      // The response body may contain clues as to what went wrong,
-      console.error(
-        `Backend returned code ${error.status}, ` +
-        `body was: ${error.error}`);
-    }
-    // return an observable with a user-facing error message
-    return throwError('Something bad happened; please try again later.');
-  }
-
 
 }

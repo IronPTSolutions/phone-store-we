@@ -1,7 +1,7 @@
-import { ApiError } from './../../../shared/models/api-error';
 import { SessionService } from './../../../shared/services/session.service';
 import { Component, OnInit } from '@angular/core';
 import { User } from '../../../shared/models/user.model';
+import { ApiError } from '../../../shared/models/api-error.model';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -11,19 +11,21 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  apiError: ApiError;
   user: User = new User();
+  apiError: ApiError;
 
-  constructor(private sessionService: SessionService, private router: Router) { }
+  constructor(private sessionService: SessionService, private router: Router) {}
 
   onSubmitLogin(loginForm: FormGroup): void {
-    this.sessionService.authenticate(this.user)
-      .subscribe(
-        (user: User) => {
-          loginForm.reset();
-          this.router.navigate(['/phones']);
-        },
-        (error: ApiError) => this.apiError = error
-      );
+    if (loginForm.valid) {
+      this.sessionService.authenticate(this.user)
+        .subscribe(
+          () => {
+            loginForm.reset();
+            this.router.navigate(['/phones']);
+          },
+          (error: ApiError) => this.apiError = error
+        );
+    }
   }
 }

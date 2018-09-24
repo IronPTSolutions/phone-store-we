@@ -1,3 +1,4 @@
+import { ApiError } from '../../../shared/models/api-error.model';
 import { PhoneService } from './../../../shared/services/phone.service';
 import { Phone } from './../../../shared/models/phone.model';
 import { Component, OnInit } from '@angular/core';
@@ -13,7 +14,9 @@ export class PhoneListComponent implements OnInit {
 
   ngOnInit() {
     this.phoneService.list()
-      .subscribe(phones => this.phones = phones);
+      .subscribe(
+        (phones: Phone[]) => this.phones = phones
+      );
   }
 
 }

@@ -1,4 +1,4 @@
 export class ApiError {
   message: string;
-  errors?: Object = {};
+  errors?: Array<string> = [];
 }

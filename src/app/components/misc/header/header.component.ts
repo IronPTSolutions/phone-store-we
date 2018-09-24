@@ -1,6 +1,6 @@
+import { SessionService } from './../../../shared/services/session.service';
 import { Router } from '@angular/router';
 import { User } from './../../../shared/models/user.model';
-import { SessionService } from './../../../shared/services/session.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 
@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
   selector: 'app-header',
   templateUrl: './header.component.html'
 })
-export class HeaderComponent implements OnInit, OnDestroy {
+export class HeaderComponent implements OnInit {
   user: User;
   onUserChanges: Subscription;
 
@@ -17,17 +17,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.user = this.sessionService.user;
     this.onUserChanges = this.sessionService.onUserChanges()
-      .subscribe(user => this.user = user);
+      .subscribe((user: User) => this.user = user);
   }
 
-  ngOnDestroy() {
-    this.onUserChanges.unsubscribe();
+  onClickLogout(): void {
+    this.sessionService.logout()
+      .subscribe(() => {
+        this.router.navigate(['/login']);
+      });
   }
-
-  onClickLogout() {
-    this.sessionService.logout().subscribe(
-      () => this.router.navigate(['/login'])
-    );
-  }
-
 }
