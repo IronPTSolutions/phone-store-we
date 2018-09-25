@@ -1,14 +1,16 @@
 import { ApiError } from '../../../shared/models/api-error.model';
 import { PhoneService } from './../../../shared/services/phone.service';
 import { Phone } from './../../../shared/models/phone.model';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-phone-list',
   templateUrl: './phone-list.component.html'
 })
-export class PhoneListComponent implements OnInit {
+export class PhoneListComponent implements OnInit, OnDestroy {
   phones: Array<Phone> = [];
+  onPhonesChangesSubscription: Subscription;
 
   constructor(private phoneService: PhoneService) {}
 
@@ -17,6 +19,14 @@ export class PhoneListComponent implements OnInit {
       .subscribe(
         (phones: Phone[]) => this.phones = phones
       );
+    this.onPhonesChangesSubscription = this.phoneService.onPhonesChanges()
+      .subscribe(
+        (phones: Phone[]) => this.phones = phones
+      );
+  }
+
+  ngOnDestroy() {
+    this.onPhonesChangesSubscription.unsubscribe();
   }
 
 }

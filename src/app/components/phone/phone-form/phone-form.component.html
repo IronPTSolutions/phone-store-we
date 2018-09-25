@@ -1,0 +1,62 @@
+<div class="row">
+  <div class="col-4">
+    <form (ngSubmit)="onSubmitPhoneForm(phoneForm)" #phoneForm="ngForm">
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="fa fa-tag"></i></span>
+        </div>
+        <input type="text" class="form-control" [ngClass]="{'is-invalid': brand.touched && brand.errors}"
+          placeholder="Brand" name="brand" [(ngModel)]="phone.brand" #brand="ngModel" required>
+        <div class="invalid-feedback" *ngIf="brand.errors && brand.touched && brand.errors.required">
+          Please chose a brand.
+        </div>
+      </div>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="fa fa-fire"></i></span>
+        </div>
+        <input type="text" class="form-control" [ngClass]="{'is-invalid': name.touched && name.errors}"
+          placeholder="Name" name="name" [(ngModel)]="phone.name" #name="ngModel"
+          required>
+        <div class="invalid-feedback" *ngIf="name.errors && name.touched && name.errors.required">
+          Please chose a name.
+        </div>
+      </div>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="fa fa-gears"></i></span>
+        </div>
+        <input type="text" class="form-control" placeholder="Spec" name="spec" #spec>
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" type="button" (click)="onClickAddSpec(spec)"><i class="fa fa-plus"></i></button>
+        </div>
+      </div>
+      <div class="input-group mb-3" *ngFor="let spec of phone.specs">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="fa fa-gear"></i></span>
+        </div>
+        <input type="text" class="form-control" name="specs" [value]="spec" disabled readonly>
+        <div class="input-group-append">
+          <button class="btn btn-outline-danger" type="button" (click)="onClickRemoveSpec(spec)"><i class="fa fa-minus"></i></button>
+        </div>
+      </div>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="fa fa-fire"></i></span>
+        </div>
+        <input type="text" class="form-control" placeholder="Image URL" [ngClass]="{'is-invalid': image.touched && image.errors}"
+          name="image" [(ngModel)]="phone.image" #image="ngModel" (change)="onChangeImageUrl(image)"
+          required appUrl>
+        <div class="invalid-feedback" *ngIf="image.errors && image.errors.appUrl">
+          Please chose valid URL.
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary btn-block" [disabled]="!phoneForm.valid">Submit Phone</button>
+      </div>
+    </form>
+  </div>
+  <div class="col-4">
+    <img [src]="imgPreview" (error)="onImgPreviewError()" class="img-preview"/>
+  </div>
+</div>
