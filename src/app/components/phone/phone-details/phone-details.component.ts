@@ -15,10 +15,9 @@ export class PhoneDetailsComponent implements OnInit {
   constructor(private phoneService: PhoneService, private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.route.params
+    this.route.data
       .pipe(
-        map((params => params.id)),
-        switchMap(id => this.phoneService.get(id))
+        map((data => data.phone))
       ).subscribe((phone: Phone) => this.phone = phone);
   }
 
