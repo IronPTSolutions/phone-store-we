@@ -1,0 +1,20 @@
+<div class="row">
+  <div class="col-3">
+    <img [src]="phone.image" class="img-fluid">
+  </div>
+  <div class="col-4">
+    <h3>{{ phone.name }}</h3>
+    <h6>{{ phone.brand }}</h6>
+    <p>specs</p>
+    <ul>
+      <li *ngFor="let spec of phone.specs">{{ spec }}</li>
+    </ul>
+    <p><em>{{ phone.createdAt | date:'yyyy-MM-dd'}}</em></p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <a [routerLink]="['/phones']" class="badge badge-light"> <i class="fa fa-arrow-left"></i> Back to list</a>
+  </div>
+</div>

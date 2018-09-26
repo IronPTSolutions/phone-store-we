@@ -14,6 +14,7 @@ import { LoginComponent } from './components/misc/login/login.component';
 import { PhoneFormComponent } from './components/phone/phone-form/phone-form.component';
 import { UrlDirective } from './shared/validators/url.directive';
 import { PhoneCreateComponent } from './components/phone/phone-create/phone-create.component';
+import { PhoneDetailsComponent } from './components/phone/phone-details/phone-details.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { PhoneCreateComponent } from './components/phone/phone-create/phone-crea
     LoginComponent,
     PhoneFormComponent,
     UrlDirective,
-    PhoneCreateComponent
+    PhoneCreateComponent,
+    PhoneDetailsComponent
   ],
   imports: [
     BrowserModule,

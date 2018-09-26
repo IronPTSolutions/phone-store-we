@@ -31,6 +31,11 @@ export class PhoneService extends BaseApiService {
       );
   }
 
+  get(id: string): Observable<Phone | ApiError> {
+    return this.http.get<Phone>(`${PhoneService.PHONE_API}/${id}`, BaseApiService.defaultOptions)
+      .pipe(catchError(this.handleError));
+  }
+
   create(phone: Phone): Observable<Phone | ApiError> {
     return this.http.post<Phone>(PhoneService.PHONE_API, JSON.stringify(phone), BaseApiService.defaultOptions)
       .pipe(
