@@ -1,3 +1,7 @@
 .img-preview {
   height: 200px;
 }
+
+.custom-file-label {
+  overflow: hidden;
+}

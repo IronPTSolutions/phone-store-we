@@ -40,17 +40,20 @@
           <button class="btn btn-outline-danger" type="button" (click)="onClickRemoveSpec(spec)"><i class="fa fa-minus"></i></button>
         </div>
       </div>
+      
       <div class="input-group mb-3">
         <div class="input-group-prepend">
-          <span class="input-group-text"><i class="fa fa-fire"></i></span>
+          <span class="input-group-text"><i class="fa fa-file-o"></i></span>
         </div>
-        <input type="text" class="form-control" placeholder="Image URL" [ngClass]="{'is-invalid': image.touched && image.errors}"
-          name="image" [(ngModel)]="phone.image" #image="ngModel" (change)="onChangeImageUrl(image)"
-          required appUrl>
-        <div class="invalid-feedback" *ngIf="image.errors && image.errors.appUrl">
-          Please chose valid URL.
+        <div class="custom-file">
+          <input type="file" class="custom-file-input" #phoneFile required (change)="onChangeImageFile(phoneFile)">
+          <label class="custom-file-label">{{ this.phone.imageFile?.name || 'Choose file' }}</label>
+        </div>
+        <div class="invalid-feedback" *ngIf="phoneFile.errors && phoneFile.errors.required">
+          Please chose file.
         </div>
       </div>
+
       <div class="form-actions">
         <button type="submit" class="btn btn-primary btn-block" [disabled]="!phoneForm.valid">Submit Phone</button>
       </div>

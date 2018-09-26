@@ -1,5 +1,5 @@
 import { Phone } from './../../../shared/models/phone.model';
-import { Component, Output, Input, EventEmitter, ViewChild } from '@angular/core';
+import { Component, Output, Input, EventEmitter, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 @Component({
@@ -9,19 +9,18 @@ import { FormGroup } from '@angular/forms';
 })
 export class PhoneFormComponent {
   private static readonly IMG_PREVIEW: string = 'http://www.nfscars.net/static/img/not-found.png';
-  
+
   @Input() phone: Phone = new Phone();
   @Output() phoneSubmit: EventEmitter<Phone> = new EventEmitter();
   @ViewChild('phoneForm') phoneForm: FormGroup;
-  imgPreview: string = PhoneFormComponent.IMG_PREVIEW;
+  imgPreview: string | ArrayBuffer = PhoneFormComponent.IMG_PREVIEW;
 
-  constructor() { }
+  constructor(private changesDetector: ChangeDetectorRef) { }
 
   onClickAddSpec(spec: HTMLInputElement): void {
     const specValue: string = spec.value;
     if (specValue && this.phone.specs.indexOf(specValue) === -1) {
       this.phone.specs.push(specValue);
-      console.log(this.phone);
     }
     spec.value = '';
   }
@@ -30,12 +29,16 @@ export class PhoneFormComponent {
     this.phone.specs = this.phone.specs.filter(s => s !== spec);
   }
 
-  onChangeImageUrl(image: HTMLInputElement): void {
-    this.imgPreview = image.value;
+  onChangeImageFile(image: HTMLInputElement): void {
+    if (image.files && image.files[0]) {
+      this.phone.imageFile = image.files[0];
+      this.renderPreviewImg(image.files[0]);
+    }
   }
 
   onImgPreviewError(): void {
     this.imgPreview = PhoneFormComponent.IMG_PREVIEW;
+    this.phone.imageFile = null;
   }
 
   onSubmitPhoneForm(): void {
@@ -52,5 +55,14 @@ export class PhoneFormComponent {
 
   canDeactivate(): boolean {
     return this.phoneForm.dirty ? window.confirm('Discard changes for Phone? Are you sure?') : true;
+  }
+
+  private renderPreviewImg(imageFile: File): void {
+    const reader = new FileReader();
+    reader.readAsDataURL(this.phone.imageFile);
+    reader.onload = () => {
+      this.imgPreview = reader.result;
+      this.changesDetector.markForCheck();
+    };
   }
 }

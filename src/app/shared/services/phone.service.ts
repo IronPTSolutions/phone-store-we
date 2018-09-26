@@ -23,6 +23,7 @@ export class PhoneService extends BaseApiService {
     return this.http.get<Array<Phone>>(PhoneService.PHONE_API, BaseApiService.defaultOptions)
       .pipe(
         map((phones: Array<Phone>) => {
+          phones = phones.map(phone => Object.assign(new Phone(), phone));
           this.phones = phones;
           this.notifyPhonesChanges();
           return phones;
@@ -33,14 +34,16 @@ export class PhoneService extends BaseApiService {
 
   get(id: string): Observable<Phone | ApiError> {
     return this.http.get<Phone>(`${PhoneService.PHONE_API}/${id}`, BaseApiService.defaultOptions)
-      .pipe(catchError(this.handleError));
+      .pipe(
+        map((phone: Phone) => Object.assign(new Phone(), phone)),
+        catchError(this.handleError));
   }
 
   delete(id: string): Observable<void | ApiError> {
     return this.http.delete<void>(`${PhoneService.PHONE_API}/${id}`, BaseApiService.defaultOptions)
       .pipe(
         map(() => {
-          this.phones =  this.phones.filter(p => p.id !== id);
+          this.phones = this.phones.filter(p => p.id !== id);
           this.notifyPhonesChanges();
           return;
         }),
@@ -49,7 +52,7 @@ export class PhoneService extends BaseApiService {
   }
 
   create(phone: Phone): Observable<Phone | ApiError> {
-    return this.http.post<Phone>(PhoneService.PHONE_API, JSON.stringify(phone), BaseApiService.defaultOptions)
+    return this.http.post<Phone>(PhoneService.PHONE_API, phone.asFormData(), { withCredentials: true })
       .pipe(
         map((phone: Phone) => {
           this.phones.push(phone);
