@@ -36,6 +36,18 @@ export class PhoneService extends BaseApiService {
       .pipe(catchError(this.handleError));
   }
 
+  delete(id: string): Observable<void | ApiError> {
+    return this.http.delete<void>(`${PhoneService.PHONE_API}/${id}`, BaseApiService.defaultOptions)
+      .pipe(
+        map(() => {
+          this.phones =  this.phones.filter(p => p.id !== id);
+          this.notifyPhonesChanges();
+          return;
+        }),
+        catchError(this.handleError)
+      );
+  }
+
   create(phone: Phone): Observable<Phone | ApiError> {
     return this.http.post<Phone>(PhoneService.PHONE_API, JSON.stringify(phone), BaseApiService.defaultOptions)
       .pipe(

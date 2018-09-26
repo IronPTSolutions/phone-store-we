@@ -1,9 +1,11 @@
-<div class="card" (click)="onClickPhone()">
-  <img class="card-img-top" [src]="phone.image" alt="Card image cap">
+<div class="card">
+  <img class="card-img-top" [src]="phone.image" alt="Card image cap" (click)="onClickPhone()">
   <div class="card-body">
     <h5 class="card-title">{{ phone.name }}</h5>
     <ul>
       <li *ngFor="let spec of phone.specs"> {{ spec }}</li>
     </ul>
+    <a [routerLink]="['/phones', phone.id]" class="btn btn-primary btn-block mb-1"><i class="fa fa-plus"></i> More info</a>
+    <button class="btn btn-danger btn-block" (click)="onClickDeletePhone()"><i class="fa fa-times"></i> Delete</button>
   </div>
 </div>
