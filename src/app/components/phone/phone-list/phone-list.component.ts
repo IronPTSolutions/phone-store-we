@@ -1,7 +1,8 @@
+import { PhoneCreateComponent } from './../phone-create/phone-create.component';
 import { ApiError } from '../../../shared/models/api-error.model';
 import { PhoneService } from './../../../shared/services/phone.service';
 import { Phone } from './../../../shared/models/phone.model';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -11,6 +12,7 @@ import { Subscription } from 'rxjs';
 export class PhoneListComponent implements OnInit, OnDestroy {
   phones: Array<Phone> = [];
   onPhonesChangesSubscription: Subscription;
+  @ViewChild(PhoneCreateComponent) phoneCreateComponent: PhoneCreateComponent;
 
   constructor(private phoneService: PhoneService) {}
 
@@ -27,6 +29,10 @@ export class PhoneListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.onPhonesChangesSubscription.unsubscribe();
+  }
+
+  canDeactivate(): boolean {
+    return this.phoneCreateComponent.canDeactivate();
   }
 
 }

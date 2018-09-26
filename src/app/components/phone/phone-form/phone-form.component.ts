@@ -49,4 +49,8 @@ export class PhoneFormComponent {
     this.phone = new Phone();
     this.phoneForm.reset();
   }
+
+  canDeactivate(): boolean {
+    return this.phoneForm.dirty ? window.confirm('Discard changes for Phone? Are you sure?') : true;
+  }
 }

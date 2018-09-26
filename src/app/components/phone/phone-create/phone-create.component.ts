@@ -8,7 +8,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
   templateUrl: './phone-create.component.html'
 })
 export class PhoneCreateComponent implements OnInit {
-  
+
   @ViewChild(PhoneFormComponent) phoneFormComponent: PhoneFormComponent;
 
   constructor(private phoneService: PhoneService) { }
@@ -21,6 +21,10 @@ export class PhoneCreateComponent implements OnInit {
       .subscribe((phone: Phone) => {
         this.phoneFormComponent.reset();
       });
+  }
+
+  canDeactivate(): boolean {
+    return this.phoneFormComponent.canDeactivate();
   }
 
 }
